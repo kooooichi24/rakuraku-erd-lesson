@@ -5,7 +5,52 @@ hide circle
 ' avoid problems with angled crows feet
 skinparam linetype ortho
 
-entity order {
+entity 注文 {
+  id
+  --
+  注文者情報.id
+  注文手段.id
+  合計金額
+}
+
+entity 注文者情報 {
+  id
+  --
+  名前
+  電話番号
+}
+
+entity 注文_注文情報 {
+  注文.id
+  注文情報.id
+}
+
+entity 注文情報 {
+  id
+  --
+  商品情報.id
+  注文数
+}
+
+entity 商品情報 {
+  id
+  --
+  商品名
+  料理項目.id
+  金額
+}
+
+entity 料理項目 {
+  id
+  --
+  料理項目
+}
+
+entity 注文手段 {
+  id
+  --
+  電話
+  現地
 }
 
 @enduml
