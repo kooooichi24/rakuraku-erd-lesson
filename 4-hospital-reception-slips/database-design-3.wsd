@@ -1,0 +1,95 @@
+@startuml database-design-3
+
+' hide the spot
+hide circle
+' avoid problems with angled crows feet
+' skinparam linetype ortho
+
+entity 受付 {
+  *受付ID (int)
+  --
+  *患者ID <<FK>>
+  *端末番号 (varchar)
+  *受付時刻 (datetime)
+}
+
+entity 受付明細 {
+  *受付明細ID
+  --
+  *受付ID <<FK>>
+  *科目ID AS 受診科目ID <<FK>>
+  *受診内容ID <<FK>>
+  *医師ID <<FK>>
+  *時刻 (datetime)
+}
+
+entity 患者 {
+  *患者ID (int)
+  --
+  *患者個別番号 (int)
+  *名前 (varchar)
+  *カナ氏名 (varchar)
+  *生年月日 (date)
+}
+
+entity 受診内容 {
+  *受診内容ID (int)
+  --
+  *受診内容 (varchar)
+}
+
+entity 医師 {
+  *医師ID (int)
+  --
+  *名前 (varchar)
+}
+
+entity 科目 {
+  *科目ID (int)
+  --
+  *科目名 (varchar)
+}
+
+entity 医師専門科目 {
+  *医師専門科目ID (int)
+  --
+  *科目ID <<FK>>
+  *医師ID <<FK>>
+}
+
+entity 受診科別受診内容 {
+  *受診科別受診内容ID (int)
+  --
+  *科目ID <<FK>>
+  *受診内容ID <<FK>>
+}
+
+entity 会計 {
+  *会計ID (int)
+  --
+  *会計番号 (int)
+  *受診ID <<FK>>
+  *会計ステータス (varchar)
+}
+
+entity 勤務 {
+  *勤務ID (int)
+  --
+  *医師ID <<FK>>
+  *勤務開始日付時刻 (datetime)
+  *勤務終了日付時刻 (datetime)
+}
+
+患者 ||--|{ 受付
+受付 ||--|{ 受付明細
+受付明細 }|--|| 科目
+受付明細 }|--|| 受診内容
+受付明細 }|--|| 医師
+医師 ||--|{ 医師専門科目
+医師専門科目 }|-u-|| 科目
+医師 ||-u-|{ 勤務
+受診内容 ||--|{ 受診科別受診内容
+受診科別受診内容 }|-u-|| 科目
+受付 ||--|| 会計 
+
+@enduml
