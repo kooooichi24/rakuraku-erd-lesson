@@ -1,0 +1,106 @@
+@startuml database-design-2
+
+' hide the spot
+hide circle
+' avoid problems with angled crows feet
+' skinparam linetype ortho
+
+entity 予約 {
+  *予約ID (int)
+  --
+  *申込日 (datetime)
+  *連絡先ID <<FK>>
+  *書籍ID <<FK>>
+  受取希望種別ID <<FK>>
+  *家族に伝えてもいいかフラグ (boolean)
+  *連絡不要区分 (boolean)
+}
+
+entity 認知詳細 {
+  *認知詳細ID (int)
+  --
+  *認知種別 (varchar) (新聞図書案内, 新聞, その他 が入る) 
+  新聞図書案内発行号 (int) (種別=新聞図書案内のみが使う)
+  新聞名 (varchar) (種別=新聞のみが使う)
+  新聞発行号情報 (int) (種別=新聞のみが使う)
+  その他情報 (varchar) (種別=その他のみが使う)
+}
+
+entity 認知 {
+  *認知_ID (int)
+  --
+  *ユーザーID <<FK>>
+  *書籍ID <<FK>>
+  *認知詳細ID <<FK>>
+}
+
+entity 書籍 {
+  *書籍ID (int)
+  --
+  *書名 (varchar)
+  *出版社ID <<FK>>
+  *出版年 (date)
+  *定価 (int)
+}
+
+entity 著者 {
+  *著者ID (int)
+  --
+  *名前 (varchar)
+  *生年月日 (date)
+}
+
+entity 書籍_著者 {
+  *書籍_著者_ID (int)
+  --
+  *書籍ID <<FK>>
+  *著者ID <<FK>>
+}
+
+entity 出版社 {
+  *出版社ID (int)
+  --
+  *出版社名 (varchar)
+}
+
+entity ユーザー {
+  *ユーザーID (int)
+  --
+  *貸出券番号 (varchar)
+  *名前 (varchar)
+  *ひらがな名前 (varchar)
+}
+
+entity 連絡先 {
+  *連絡先ID (int)
+  --
+  *ユーザーID <<FK>>
+  *連絡方法ID <<FK>>
+  *番号 (varchar)
+}
+
+entity 連絡方法 {
+  *連絡方法ID (int)
+  --
+  *連絡種別名 (varchar) (自宅TEL, 携帯, FAX, 勤務先TEL が入る)
+}
+
+entity 受取希望種別 {
+  *受取希望種別ID (int)
+  --
+  *方法 (varchar) (受取希望館やみどり号ステーション名が入る)
+}
+
+予約 ||-u-|| 書籍
+予約 }o--|| 受取希望種別
+ユーザー ||-u-o{ 認知
+認知 }o--|| 書籍
+認知 }|--|| 認知詳細
+書籍 ||--|{ 書籍_著者
+書籍_著者 }|--|| 著者
+書籍 }|--|| 出版社
+ユーザー ||--|{ 連絡先
+連絡先 }|-u-|| 連絡方法
+予約 }o--|| 連絡先
+
+@enduml
